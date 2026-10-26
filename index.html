@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password Generator</title>
+<style>
+  body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #c7d2fe, #e9d5ff);
+  color: #1e293b;
+  text-align: center;
+
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+ background: rgba(255, 255, 255, 0.65);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(67, 56, 202, 0.12);
+  width: 100%;
+  max-width: 520px;
+  box-sizing: border-box;
+}
+  h1 {
+    color: #4338ca;
+  }
+
+  p {
+    color: #64748b;
+  }
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 18px 12px;
+  margin: 20px 0;
+  box-sizing: border-box;
+
+  background: #f5f3ff;
+  border: 2px solid #a5b4fc;
+  border-radius: 12px;
+
+  color: #4338ca;
+  font-family: Consolas, monospace;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+  color: #94a3b8;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: normal;
+}
+  input[type="number"] {
+    width: 65px;
+    padding: 8px;
+    margin: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+  }
+
+  label {
+    font-size: 15px;
+  }
+
+  button {
+  display: block;
+  width: 100%;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+  button:hover {
+    background: #3730a3;
+  }
+button:last-child {
+  background: white;
+  color: #4f46e5;
+  border: 2px solid #4f46e5;
+}
+
+button:last-child:hover {
+  background: #eef2ff;
+}
+input[type="range"] {
+  display: block;
+  width: 90%;
+  max-width: 300px;
+  margin: 20px auto;
+  cursor: pointer;
+
+  -webkit-appearance: none;
+  appearance: none;
+
+  height: 8px;
+  background: #c7d2fe;
+  border-radius: 10px;
+  accent-color: #4f46e5;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #4f46e5;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #4f46e5;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.mode-selector label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+#lengthValue {
+  font-weight: bold;
+  color: #4338ca;
+}
+#passwordStrength {
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.strength-bar {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  margin: 10px 0 20px;
+  overflow: hidden;
+}
+
+#strengthFill {
+  width: 0%;
+  height: 100%;
+  background: #a5b4fc;
+  border-radius: 10px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  background: #4f46e5;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  .container {
+    padding: 20px 15px;
+    border-radius: 16px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  input[type="text"] {
+    font-size: 16px;
+    padding: 14px 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .mode-selector {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  button {
+    padding: 15px;
+  }
+}
+.language-selector {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.language-selector select {
+  padding: 8px 12px;
+  border: 2px solid #a5b4fc;
+  border-radius: 8px;
+  background: #f5f3ff;
+  color: #4338ca;
+  font-size: 14px;
+  cursor: pointer;
+}
+/* Fix mode buttons on mobile */
+@media (max-width: 600px) {
+  .mode-selector label {
+    height: auto !important;
+    min-height: 56px;
+    max-height: 80px;
+    padding: 12px !important;
+    flex: 1 1 100% !important;
+  }
+
+  .mode-selector {
+    gap: 10px;
+  }
+}
+/* Mode selector as two buttons */
+.mode-selector label {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 25px 0;
+}
+
+.mode-selector label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  padding: 12px 18px;
+  border: 2px solid #a5b4fc;
+  border-radius: 14px;
+  background: #f5f3ff;
+  color: #4338ca;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.mode-selector label:hover {
+  background: #ede9fe;
+  border-color: #818cf8;
+}
+
+.mode-selector input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mode-selector label:has(input[type="radio"]:checked) {
+  background: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.18);
+}
+
+.mode-selector label:has(input[type="radio"]:checked):hover {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+/* Align password option switches */
+label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 260px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: left;
+}
+/* Beautiful toggle switches */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px;
+  height: 24px;
+  background: #cbd5e1;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-right: 10px;
+  transition: background 0.3s ease;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 3px;
+  left: 3px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+  background: #8b5cf6;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 3px solid #c4b5fd;
+  outline-offset: 3px;
+}
+/* Responsive layout for all phone sizes */
+@media (max-width: 600px) {
+  .container {
+    width: calc(100% - 24px);
+    max-width: 100%;
+    margin: 12px auto;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .mode-selector {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .mode-selector label {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  input,
+  select,
+  button {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+/* Compact mobile layout */
+@media (max-width: 600px) {
+  .container {
+    padding: 12px;
+    margin: 8px auto;
+  }
+
+  .container h1 {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .mode-selector {
+    margin: 10px 0;
+    gap: 6px;
+  }
+
+  .mode-selector label {
+    min-height: 42px;
+    max-height: none;
+    padding: 8px 10px !important;
+  }
+}
+/* Compact checkbox layout on phones */
+@media (max-width: 600px) {
+  .password-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 8px;
+    margin: 12px 0;
+  }
+
+  .password-options label {
+    width: 100%;
+    font-size: 12px;
+    margin: 0;
+    align-items: center;
+  }
+
+  .password-options input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-right: 5px;
+  }
+}
+/* Better spacing for mobile switches */
+@media (max-width: 600px) {
+  .password-options {
+    gap: 12px 6px;
+  }
+
+  .password-options label {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .password-options input[type="checkbox"] {
+    width: 38px;
+    height: 22px;
+    margin-right: 4px;
+  }
+
+  .password-options input[type="checkbox"]::before {
+    width: 16px;
+    height: 16px;
+  }
+
+  .password-options input[type="checkbox"]:checked::before {
+    transform: translateX(16px);
+  }
+}
+/* Save vertical space on phones */
+@media (max-width: 600px) {
+  .language-selector {
+    margin-bottom: 8px;
+  }
+
+  #password {
+    margin: 10px 0;
+    padding: 12px 10px;
+  }
+
+  #togglePasswordButton {
+    margin: 6px 0;
+    padding: 10px;
+  }
+
+  #passwordCount {
+    margin: 8px 0;
+  }
+
+  .strength-bar {
+    margin: 6px 0 12px;
+  }
+
+  #passwordLength {
+    margin: 12px auto;
+  }
+
+  #lengthTip {
+    margin: 8px 0;
+  }
+
+  .password-options {
+    margin: 8px 0;
+  }
+}
+/* Smooth copy confirmation */
+#copyMessage {
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+#copyMessage.fade-out {
+  opacity: 0;
+}
+</style>
+<script>
+
+const translations = {
+  en: {
+    language: "🌍 Language:",
+    title: "Password Generator",
+    subtitle: "Create a strong password in one click.",
+    securityTip: "🔒 Never share your password with anyone.",
+    passwordCount: "🔢 Password characters:",
+    lengthTip: "💡 Tip: Use at least 16 characters for a stronger password.",
+    newMode: "✨ Generate New Password",
+    completeMode: "✏️ Complete My Password",
+    idea: "Your password idea (required):",
+    ideaPlaceholder: "Enter your password idea",
+    passwordPlaceholder: "Your password will appear here",
+    length: "Password length:",
+    uppercase: "Include uppercase letters (A-Z)",
+    lowercase: "Include lowercase letters (a-z)",
+    numbers: "Include numbers",
+    symbols: "Include symbols",
+    allowed: "Allowed special characters:",
+    generate: "✨ Generate Password",
+    copy: "📋 Copy Password",
+    hide: "🙈 Hide Password",
+    show: "👁️ Show Password",
+strength: "Password strength:",
+weak: "Weak",
+medium: "Medium",
+strong: "Strong",
+copied: "Password copied! ✓",
+errorIdea: "Please enter your password idea first.",
+errorSymbols: "Please enter at least one allowed special character.",
+errorTypes: "Please select at least one character type.",
+errorLength: "Choose a password length between 8 and 32.",
+errorUppercase: "Your password idea contains uppercase letters, but uppercase letters are disabled.",
+errorLowercase: "Your password idea contains lowercase letters, but lowercase letters are disabled.",
+errorNumbers: "Your password idea contains numbers, but numbers are disabled.",
+errorSymbolsDisabled: "Your password idea contains special characters, but symbols are disabled.",
+errorNotAllowed: "Your password idea contains a special character that is not allowed: ",
+errorTooLong: "Your password idea is longer than the selected password length.",
+errorNoSpace: "Increase password length or shorten your password idea.",
+errorCopyEmpty: "Generate a password first.",
+errorCopyFailed: "Copying failed. Please select and copy the password manually."
+},
+
+  uk: {
+    language: "🌍 Мова:",
+    title: "Генератор паролів",
+    subtitle: "Створи надійний пароль одним натисканням.",
+    securityTip: "🔒 Нікому не передавай свій пароль.",
+    passwordCount: "🔢 Символів у паролі:",
+    lengthTip: "💡 Порада: використовуй щонайменше 16 символів для надійнішого пароля.",
+    newMode: "✨ Створити новий пароль",
+    completeMode: "✏️ Доповнити мій пароль",
+    idea: "Твоя ідея пароля (обов'язково):",
+    ideaPlaceholder: "Введи свою ідею пароля",
+    passwordPlaceholder: "Тут з'явиться твій пароль",
+    length: "Довжина пароля:",
+    uppercase: "Великі літери (A-Z)",
+    lowercase: "Малі літери (a-z)",
+    numbers: "Додавати цифри",
+    symbols: "Додавати символи",
+    allowed: "Дозволені спеціальні символи:",
+    generate: "✨ Створити пароль",
+    copy: "📋 Копіювати пароль",
+    hide: "🙈 Приховати пароль",
+    show: "👁️ Показати пароль",
+strength: "Надійність пароля:",
+weak: "Слабкий",
+medium: "Середній",
+strong: "Надійний",
+copied: "Пароль скопійовано! ✓",
+errorIdea: "Спочатку введи свою ідею пароля.",
+errorSymbols: "Введи хоча б один дозволений спеціальний символ.",
+errorTypes: "Вибери хоча б один тип символів.",
+errorLength: "Вибери довжину пароля від 8 до 32 символів.",
+errorUppercase: "Твоя ідея пароля містить великі літери, але їх вимкнено.",
+errorLowercase: "Твоя ідея пароля містить малі літери, але їх вимкнено.",
+errorNumbers: "Твоя ідея пароля містить цифри, але їх вимкнено.",
+errorSymbolsDisabled: "Твоя ідея пароля містить спеціальні символи, але їх вимкнено.",
+errorNotAllowed: "Твоя ідея пароля містить недозволений символ: ",
+errorTooLong: "Твоя ідея пароля довша за вибрану довжину пароля.",
+errorNoSpace: "Збільш довжину пароля або скороти свою ідею.",
+errorCopyEmpty: "Спочатку створи пароль.",
+errorCopyFailed: "Не вдалося скопіювати пароль. Виділи його та скопіюй вручну."
+ },
+
+  pl: {
+    language: "🌍 Język:",
+    title: "Generator haseł",
+    subtitle: "Utwórz silne hasło jednym kliknięciem.",
+    securityTip: "🔒 Nigdy nie udostępniaj nikomu swojego hasła.",
+    passwordCount: "🔢 Liczba znaków hasła:",
+    lengthTip: "💡 Wskazówka: użyj co najmniej 16 znaków, aby hasło było silniejsze.",
+    newMode: "✨ Wygeneruj nowe hasło",
+    completeMode: "✏️ Uzupełnij moje hasło",
+    idea: "Twój pomysł na hasło (wymagane):",
+    ideaPlaceholder: "Wpisz swój pomysł na hasło",
+    passwordPlaceholder: "Tutaj pojawi się twoje hasło",
+    length: "Długość hasła:",
+    uppercase: "Wielkie litery (A-Z)",
+    lowercase: "Małe litery (a-z)",
+    numbers: "Dodaj cyfry",
+    symbols: "Dodaj symbole",
+    allowed: "Dozwolone znaki specjalne:",
+    generate: "✨ Generuj hasło",
+    copy: "📋 Kopiuj hasło",
+    hide: "🙈 Ukryj hasło",
+    show: "👁️ Pokaż hasło",
+strength: "Siła hasła:",
+weak: "Słabe",
+medium: "Średnie",
+strong: "Silne",
+copied: "Hasło skopiowane! ✓",
+errorIdea: "Najpierw wpisz swój pomysł na hasło.",
+errorSymbols: "Wpisz co najmniej jeden dozwolony znak specjalny.",
+errorTypes: "Wybierz co najmniej jeden rodzaj znaków.",
+errorLength: "Wybierz długość hasła od 8 do 32 znaków.",
+errorUppercase: "Twój pomysł na hasło zawiera wielkie litery, ale są one wyłączone.",
+errorLowercase: "Twój pomysł na hasło zawiera małe litery, ale są one wyłączone.",
+errorNumbers: "Twój pomysł na hasło zawiera cyfry, ale są one wyłączone.",
+errorSymbolsDisabled: "Twój pomysł na hasło zawiera znaki specjalne, ale są one wyłączone.",
+errorNotAllowed: "Twój pomysł na hasło zawiera niedozwolony znak: ",
+errorTooLong: "Twój pomysł na hasło jest dłuższy niż wybrana długość.",
+errorNoSpace: "Zwiększ długość hasła lub skróć swój pomysł.",
+errorCopyEmpty: "Najpierw wygeneruj hasło.",
+errorCopyFailed: "Nie udało się skopiować hasła. Zaznacz je i skopiuj ręcznie."
+  }
+};
+
+function changeLanguage() {
+  const lang = document.getElementById("languageSelect").value;
+  const t = translations[lang];
+
+  localStorage.setItem("passwordGeneratorLanguage", lang);
+
+  document.querySelector(".language-selector label").textContent = t.language;
+  document.querySelector("h1").textContent = t.title;
+  document.getElementById("securityTip").textContent = t.securityTip;
+  document.getElementById("lengthTip").textContent = t.lengthTip;
+  const countField = document.getElementById("password");
+const actualPassword = countField.dataset.hidden === "true"
+  ? countField.dataset.realPassword
+  : countField.value;
+
+  document.getElementById("passwordCount").textContent =
+  t.passwordCount + " " + actualPassword.length;
+
+  document.querySelector(".container > p").textContent = t.subtitle;
+
+  const modes = document.querySelectorAll(".mode-selector label");
+  modes[0].lastChild.textContent = " " + t.newMode;
+  modes[1].lastChild.textContent = " " + t.completeMode;
+
+  document.querySelector('label[for="customPassword"]').textContent = t.idea;
+  document.getElementById("customPassword").placeholder = t.ideaPlaceholder;
+  document.getElementById("password").placeholder = t.passwordPlaceholder;
+
+  document.querySelector('label[for="passwordLength"]').firstChild.textContent =
+    t.length + " ";
+
+  document.querySelector('label[for="allowedSymbols"]').textContent = t.allowed;
+
+  ["includeUppercase", "includeLowercase", "includeNumbers", "includeSymbols"]
+    .forEach((id, index) => {
+      const key = ["uppercase", "lowercase", "numbers", "symbols"][index];
+      const input = document.getElementById(id);
+      const label = input.closest("label");
+
+      Array.from(label.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = "";
+        }
+      });
+
+      label.appendChild(document.createTextNode(" " + t[key]));
+    });
+
+  document.querySelector('button[onclick="generatePassword()"]').textContent = t.generate;
+  document.getElementById("copyButton").textContent = t.copy;
+
+  const isHidden = document.getElementById("password").dataset.hidden === "true";
+  document.getElementById("togglePasswordButton").textContent =
+    isHidden ? t.show : t.hide;
+
+  const passwordField = document.getElementById("password");
+
+const currentPassword = passwordField.dataset.hidden === "true"
+  ? passwordField.dataset.realPassword
+  : passwordField.value;
+
+checkPasswordStrength(currentPassword);
+document.documentElement.lang = lang;
+}
+
+function toggleSymbolsField() {
+  const includeSymbols = document.getElementById("includeSymbols").checked;
+  const section = document.getElementById("allowedSymbolsSection");
+
+  if (includeSymbols) {
+    section.style.display = "block";
+  } else {
+    section.style.display = "none";
+  }
+
+  clearPasswordResult();
+}
+function changePasswordMode() {
+  const mode = document.querySelector('input[name="passwordMode"]:checked').value;
+  const section = document.getElementById("customPasswordSection");
+
+  if (mode === "complete") {
+    section.style.display = "block";
+  } else {
+    section.style.display = "none";
+  }
+
+  clearPasswordResult();
+}
+function checkPasswordStrength(password) {
+  const strengthElement = document.getElementById("passwordStrength");
+  const strengthFill = document.getElementById("strengthFill");
+
+  const lang = document.getElementById("languageSelect").value;
+  const t = translations[lang];
+
+  if (password.length === 0) {
+    strengthElement.textContent = t.strength + " —";
+    strengthElement.style.color = "#1e293b";
+    strengthFill.style.width = "0%";
+    return;
+  }
+
+  let score = 0;
+
+  if (password.length >= 12) score++;
+  if (password.length >= 16) score++;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 2) {
+    strengthElement.textContent = t.strength + " " + t.weak;
+    strengthFill.style.width = "30%";
+    strengthFill.style.background = "#ef4444";
+    strengthElement.style.color = "#ef4444";
+  } 
+    else if (score <= 4) {
+    strengthElement.textContent = t.strength + " " + t.medium;
+    strengthFill.style.width = "65%";
+    strengthFill.style.background = "#eab308";
+    strengthElement.style.color = "#ca8a04";
+  } 
+    else {
+    strengthElement.textContent = t.strength + " " + t.strong;
+    strengthFill.style.width = "100%";
+    strengthFill.style.background = "#22c55e";
+    strengthElement.style.color = "#16a34a";
+  }
+}
+
+function clearPasswordResult() {
+ const countLang = document.getElementById("languageSelect").value;
+document.getElementById("passwordCount").textContent =
+  translations[countLang].passwordCount + " 0";
+ const passwordField = document.getElementById("password");
+
+passwordField.value = "";
+passwordField.dataset.hidden = "false";
+passwordField.dataset.realPassword = "";
+
+document.getElementById("passwordStrength").textContent =
+  translations[document.getElementById("languageSelect").value].strength + " —"; 
+
+ document.getElementById("strengthFill").style.width = "0%";
+ document.getElementById("passwordStrength").style.color = "#1e293b";
+
+document.getElementById("togglePasswordButton").textContent =
+  translations[document.getElementById("languageSelect").value].hide;
+
+  clearTimeout(copyMessageTimer);
+  document.getElementById("copyMessage").textContent = "";
+
+  document.getElementById("copyButton").disabled = true;
+  document.getElementById("togglePasswordButton").disabled = true;
+}
+
+function togglePasswordVisibility() {
+  const passwordField = document.getElementById("password");
+  const button = document.getElementById("togglePasswordButton");
+
+  const lang = document.getElementById("languageSelect").value;
+  const t = translations[lang];
+
+  if (passwordField.dataset.hidden === "true") {
+    passwordField.value = passwordField.dataset.realPassword;
+    passwordField.dataset.hidden = "false";
+    button.textContent = t.hide;
+  } else {
+    passwordField.dataset.realPassword = passwordField.value;
+    passwordField.value = "*".repeat(passwordField.value.length);
+    passwordField.dataset.hidden = "true";
+    button.textContent = t.show;
+  }
+}
+
+function generatePassword() {
+
+const lang = document.getElementById("languageSelect").value;
+const t = translations[lang];
+
+clearTimeout(copyMessageTimer);
+document.getElementById("copyMessage").textContent = "";
+
+   let characters = "";
+   let requiredCharacters = [];
+if (document.getElementById("includeUppercase").checked) {
+  characters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  requiredCharacters.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+}
+if (document.getElementById("includeLowercase").checked) {
+  characters += "abcdefghijklmnopqrstuvwxyz";
+  requiredCharacters.push("abcdefghijklmnopqrstuvwxyz");
+}
+
+if (document.getElementById("includeNumbers").checked) {
+  characters += "0123456789";
+  requiredCharacters.push("0123456789");
+}
+if (document.getElementById("includeSymbols").checked) {
+  const allowedSymbols = document.getElementById("allowedSymbols").value;
+
+  if (allowedSymbols.length === 0) {
+alert(t.errorSymbols);
+    return;
+  }
+
+  characters += allowedSymbols;
+  requiredCharacters.push(allowedSymbols);
+}if (characters.length === 0) {
+alert(t.errorTypes);
+  return;
+}
+const mode = document.querySelector('input[name="passwordMode"]:checked').value;
+
+let password = "";
+
+if (mode === "complete") {
+  password = document.getElementById("customPassword").value;
+
+  if (password.trim() === "") {
+alert(t.errorIdea);
+    return;
+  }
+
+  if (!document.getElementById("includeUppercase").checked &&
+      /[A-Z]/.test(password)) {
+alert(t.errorUppercase);
+    return;
+  }
+
+  if (!document.getElementById("includeLowercase").checked &&
+      /[a-z]/.test(password)) {
+    alert(t.errorLowercase);
+    return;
+  }
+if (!document.getElementById("includeNumbers").checked &&
+    /[0-9]/.test(password)) {
+  alert(t.errorNumbers);
+  return;
+}
+const symbolsEnabled = document.getElementById("includeSymbols").checked;
+const allowedSymbols = document.getElementById("allowedSymbols").value;
+
+for (const char of password) {
+  const isLetterOrNumber = /[A-Za-z0-9]/.test(char);
+
+  if (!isLetterOrNumber) {
+    if (!symbolsEnabled) {
+      alert(t.errorSymbolsDisabled);
+      return;
+    }
+
+    if (!allowedSymbols.includes(char)) {
+      alert(t.errorNotAllowed + char);
+      return;
+    }
+  }
+}
+}
+    const length = Number(document.getElementById("passwordLength").value);
+
+if (!Number.isInteger(length) || length < 8 || length > 32) {
+alert(t.errorLength);
+  return;
+}
+
+if (password.length > length) {
+alert(t.errorTooLong);
+  return;
+}
+
+const remainingLength = length - password.length;
+
+const missingGroups = requiredCharacters.filter(group => {
+  return ![...password].some(char => group.includes(char));
+});
+
+if (missingGroups.length > remainingLength) {
+alert(t.errorNoSpace);
+  return;
+}
+
+function randomIndex(max) {
+  const limit = Math.floor(4294967296 / max) * max;
+  const value = new Uint32Array(1);
+
+  do {
+    crypto.getRandomValues(value);
+  } while (value[0] >= limit);
+
+  return value[0] % max;
+}
+
+let extraCharacters = [];
+
+for (const group of missingGroups) {
+  extraCharacters.push(group[randomIndex(group.length)]);
+}
+
+while (extraCharacters.length < remainingLength) {
+  extraCharacters.push(characters[randomIndex(characters.length)]);
+}
+
+for (let i = extraCharacters.length - 1; i > 0; i--) {
+  const j = randomIndex(i + 1);
+
+  [extraCharacters[i], extraCharacters[j]] =
+    [extraCharacters[j], extraCharacters[i]];
+}
+
+password += extraCharacters.join("");
+  const passwordField = document.getElementById("password");
+
+passwordField.value = password;
+passwordField.dataset.hidden = "false";
+passwordField.dataset.realPassword = "";
+
+document.getElementById("togglePasswordButton").textContent =
+  translations[document.getElementById("languageSelect").value].hide;
+
+checkPasswordStrength(password);
+document.getElementById("passwordCount").textContent =
+  t.passwordCount + " " + password.length;
+document.getElementById("copyButton").disabled = false;
+document.getElementById("togglePasswordButton").disabled = false;
+  }
+let copyMessageTimer;
+async function copyPassword() {
+const lang = document.getElementById("languageSelect").value;
+const t = translations[lang];
+
+ const passwordField = document.getElementById("password");
+
+const password = passwordField.dataset.hidden === "true"
+  ? passwordField.dataset.realPassword
+  : passwordField.value;
+
+  if (password === "") {
+alert(t.errorCopyEmpty);
+    return;
+  }
+
+  try {
+  await navigator.clipboard.writeText(password);
+
+  const message = document.getElementById("copyMessage");
+
+message.textContent = translations[lang].copied;
+  message.style.color = "#16a34a";
+
+clearTimeout(copyMessageTimer);
+
+message.classList.remove("fade-out");
+
+copyMessageTimer = setTimeout(() => {
+  message.classList.add("fade-out");
+
+  setTimeout(() => {
+    message.textContent = "";
+  }, 600);
+}, 2400);
+}
+ catch (error) {
+alert(t.errorCopyFailed);}
+}
+window.addEventListener("DOMContentLoaded", function() {
+  const savedLanguage = localStorage.getItem("passwordGeneratorLanguage");
+
+  if (savedLanguage && translations[savedLanguage]) {
+    document.getElementById("languageSelect").value = savedLanguage;
+  }
+
+  changeLanguage();
+});
+
+</script>
+</head>
+<body>
+  <div class="container">
+
+   <div class="language-selector">
+     <label for="languageSelect">🌍 Language:</label>
+
+  <select id="languageSelect" onchange="changeLanguage()">
+    <option value="en">🇬🇧 English</option>
+    <option value="uk">🇺🇦 Українська</option>
+    <option value="pl">🇵🇱 Polski</option>
+  </select>
+</div>
+
+  <h1>Password Generator</h1>
+  <p>Create a strong password in one click.</p>
+
+<div class="mode-selector">
+  <label>
+<input type="radio" name="passwordMode" value="new" checked onchange="changePasswordMode()">
+    Generate New Password
+  </label>
+
+  <label>
+    <input type="radio" name="passwordMode" value="complete" onchange="changePasswordMode()">
+    Complete My Password
+  </label>
+</div>	
+<div 
+  id="customPasswordSection" style="display: none;">
+  <label for="customPassword">Your password idea (required):</label>
+  <input type="text"  id="customPassword" placeholder="Enter your password idea"
+  autocomplete="off"
+  spellcheck="false"
+  oninput="clearPasswordResult()"
+>
+</div>
+  <input type="text" id="password"readonly placeholder=" Your password will appear here">
+
+<button type="button" id="togglePasswordButton" onclick="togglePasswordVisibility()" disabled>
+  Hide Password
+</button>
+
+<p id="passwordCount" style="font-size: 13px; color: #64748b;">
+  🔢 Password characters: 0
+</p>
+
+<div id="passwordStrength" aria-live="polite">
+  Password strength: —
+</div> 
+
+<div class="strength-bar">
+  <div id="strengthFill"></div>
+</div>
+
+<div>
+  <label
+ for="passwordLength">
+    Password length: <span id="lengthValue">12</span>
+  </label>
+<input
+ type="range"
+ id="passwordLength" 
+ min="8" max="32"
+ value="12"
+ oninput="document.getElementById('lengthValue').textContent = this.value; clearPasswordResult()">
+<p id="lengthTip" style="font-size: 12px; color: #64748b;">
+  💡 Tip: Use at least 16 characters for a stronger password.
+</p>
+</div> 
+
+<div class="password-options">
+ <div>
+  <label>
+   <input type="checkbox" 
+ id="includeUppercase" 
+ checked onchange="clearPasswordResult()">
+    Include uppercase letters (A-Z)
+  </label>
+</div>
+
+<div>
+  <label>
+   <input type="checkbox"
+ id="includeLowercase"
+ checked onchange="clearPasswordResult()">
+    Include lowercase letters (a-z)
+  </label>
+</div>
+
+<div>
+  <label>
+<input
+ type="checkbox"
+ id="includeNumbers"
+ checked onchange="clearPasswordResult()"> Include numbers</label>
+</div>
+
+<div>
+  <label>
+<input
+ type="checkbox"
+ id="includeSymbols"
+ onchange="toggleSymbolsField()">Include symbols</label>
+</div>
+
+</div>
+
+<div id="allowedSymbolsSection" style="display: none;">
+  <label for="allowedSymbols">Allowed special characters:</label>
+  <input
+  type="text"
+  id="allowedSymbols"
+  value="!@#$%&*"
+  autocomplete="off"
+  spellcheck="false"
+  oninput="clearPasswordResult()"
+>
+</div>
+
+<button onclick="generatePassword()">Generate Password</button>
+<button id="copyButton" onclick="copyPassword()" disabled>
+  Copy Password
+</button>
+
+<p id="copyMessage" aria-live="polite"></p>
+<p id="securityTip" style="font-size: 12px; color: #64748b; margin-top: 15px;">
+  🔒 Never share your password with anyone.
+</p>
+  </div>
+</body>
+</html>
